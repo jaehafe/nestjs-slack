@@ -16,7 +16,15 @@ import { LoggerMiddleware } from './middlewares/logger.middlewares';
   // imports: [ConfigModule.forRoot({ isGlobal: true, load: [getEnv] })],
   imports: [ConfigModule.forRoot({ isGlobal: true })],
   controllers: [AppController],
-  providers: [AppService, ConfigService], // 의존성 주입할 서비스 등록
+  providers: [
+    // 원형
+    // {
+    //   provide: AppService,
+    //   useClass: AppService,
+    // },
+    AppService,
+    ConfigService,
+  ], // 의존성 주입할 서비스 등록
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
