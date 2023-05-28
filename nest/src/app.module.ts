@@ -3,28 +3,21 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerMiddleware } from './middlewares/logger.middlewares';
-
-// const getEnv = async () => {
-//   const res = await axios.get('/비밀키요청')
-//   return {
-//     DATABASE_USER: 'root',
-//     DATABASE_PASSWORD: '123456789',
-//   };
-// };
+import { UsersModule } from './users/users.module';
+import { WorkspacesModule } from './workspaces/workspaces.module';
+import { DmsModule } from './dms/dms.module';
+import { ChannelsModule } from './channels/channels.module';
 
 @Module({
-  // imports: [ConfigModule.forRoot({ isGlobal: true, load: [getEnv] })],
-  imports: [ConfigModule.forRoot({ isGlobal: true })],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    UsersModule,
+    WorkspacesModule,
+    DmsModule,
+    ChannelsModule,
+  ],
   controllers: [AppController],
-  providers: [
-    // 원형
-    // {
-    //   provide: AppService,
-    //   useClass: AppService,
-    // },
-    AppService,
-    ConfigService,
-  ], // 의존성 주입할 서비스 등록
+  providers: [AppService, ConfigService], // 의존성 주입할 서비스 등록
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
