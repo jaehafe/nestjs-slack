@@ -1,5 +1,7 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Delete, Get, Post } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('WORKSPACE')
 @Controller('api/workspaces')
 export class WorkspacesController {
   @Get()
@@ -10,4 +12,13 @@ export class WorkspacesController {
 
   @Get(':url/members')
   getAllMembersFromWorkspace() {}
+
+  @Post(':url/members')
+  inviteMembersToWorkspace() {}
+
+  @Delete(':url/members/:id')
+  kickMembersFromWorkspace() {}
+
+  @Get(':url/members/:id')
+  getMemberInfoInWorkspace() {}
 }
