@@ -22,7 +22,7 @@ import { UsersService } from './users/users.service';
   exports: [],
 })
 export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
+  configure(consumer: MiddlewareConsumer): any {
     consumer.apply(LoggerMiddleware).forRoutes('*'); // 모든 경로에 middleware 적용
   }
 }
