@@ -18,7 +18,7 @@ import { UsersService } from './users.service';
 @ApiTags('USER')
 @Controller('api/users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @ApiResponse({
     type: UserDto,
