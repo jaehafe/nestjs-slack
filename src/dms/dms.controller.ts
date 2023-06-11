@@ -24,10 +24,11 @@ export class DmsController {
     required: true,
     description: '불러올 페이지',
   })
+  // http://localhost:3030/api/workspaces/123/dms/123/chats?perPage=10&page=1
   @Get(':id/chats')
   getChat(@Query() query, @Param() param) {
-    console.log(query.perPage, query.page);
-    console.log(param.id, param.url);
+    console.log('query=', query.perPage, query.page);
+    console.log('param=', param.id, param.url);
   }
 
   @Post(':id/chats')
