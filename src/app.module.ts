@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './middlewares/logger.middlewares';
 import { UsersModule } from './users/users.module';
 import { WorkspacesModule } from './workspaces/workspaces.module';
@@ -14,11 +14,11 @@ import { typeORMConfig } from './configs/typeorm.config';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forRoot(typeORMConfig),
     UsersModule,
     WorkspacesModule,
     DmsModule,
     ChannelsModule,
-    TypeOrmModule.forRoot(typeORMConfig),
   ],
   controllers: [AppController],
   providers: [AppService, UsersService], // 의존성 주입할 서비스 등록

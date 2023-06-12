@@ -22,7 +22,6 @@ import { Users } from './Users';
 @Index('OwnerId', ['OwnerId'], {})
 @Entity({ schema: 'sleact', name: 'workspaces' })
 export class Workspaces {
-  // db에서는 name: 'id', js에서는 id
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
 
