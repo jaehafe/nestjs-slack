@@ -38,7 +38,7 @@ export class UsersController {
   @Post()
   // express의 body-parser
   join(@Body() body: JoinRequestDto) {
-    this.usersService.postUsers(body.email, body.nickname, body.password);
+    this.usersService.join(body.email, body.nickname, body.password);
   }
 
   @ApiResponse({
