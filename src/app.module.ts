@@ -8,6 +8,8 @@ import { WorkspacesModule } from './workspaces/workspaces.module';
 import { DmsModule } from './dms/dms.module';
 import { ChannelsModule } from './channels/channels.module';
 import { UsersService } from './users/users.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { typeORMConfig } from './configs/typeorm.config';
 
 @Module({
   imports: [
@@ -16,6 +18,7 @@ import { UsersService } from './users/users.service';
     WorkspacesModule,
     DmsModule,
     ChannelsModule,
+    TypeOrmModule.forRoot(typeORMConfig),
   ],
   controllers: [AppController],
   providers: [AppService, UsersService], // 의존성 주입할 서비스 등록
