@@ -14,7 +14,10 @@ export const typeORMConfig: TypeOrmModuleOptions = {
   port: 3306,
   username: 'root',
   password: '123456789',
-  database: 'chat',
+  database: 'slack',
+  // username: process.env.DATABASE_USERNAME,
+  // password: process.env.DATABASE_PASSWORD,
+  // database: process.env.DATABASE_DATABASE,
   // entities: [__dirname + '/src/entities/*.{js,ts}'],
   entities: [
     ChannelChats,
