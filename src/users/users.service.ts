@@ -1,12 +1,9 @@
-import {
-  BadRequestException,
-  HttpException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Users } from 'src/entities/Users';
 import { Repository } from 'typeorm';
+import { Users } from 'src/entities/Users';
+import { WorkspaceMembers } from 'src/entities/WorkspaceMembers';
+import { ChannelMembers } from 'src/entities/ChannelMembers';
 import bcrypt from 'bcrypt';
 
 @Injectable()
@@ -14,6 +11,10 @@ export class UsersService {
   constructor(
     @InjectRepository(Users)
     private usersRepository: Repository<Users>,
+    @InjectRepository(WorkspaceMembers)
+    private workspaceMembersRepository: Repository<WorkspaceMembers>,
+    @InjectRepository(ChannelMembers)
+    private channelMembersRepository: Repository<ChannelMembers>,
   ) {}
 
   getUser() {}
@@ -27,10 +28,31 @@ export class UsersService {
     }
 
     const hashPassword = await bcrypt.hash(password, 12);
-    await this.usersRepository.save({
+    const returned = await this.usersRepository.save({
       email,
       nickname,
       password: hashPassword,
     });
+
+    // 이렇게도 사용 가능
+    // 1.
+    // const workspaceMember = this.workspaceMembersRepository.create()
+
+    // 2.
+    // const workspaceMember = new WorkspaceMembers()
+    // workspaceMember.UserId = returned.id
+    // workspaceMember.WorkspaceId = 1
+
+    await this.workspaceMembersRepository.save({
+      UserId: returned.id,
+      WorkspaceId: 1,
+    });
+
+    await this.channelMembersRepository.save({
+      UserId: returned.id,
+      ChannelId: 1,
+    });
+
+    return true;
   }
 }

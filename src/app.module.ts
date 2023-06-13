@@ -25,12 +25,12 @@ import { AuthModule } from './auth/auth.module';
     ChannelsModule,
     TypeOrmModule.forFeature([Users]),
   ],
-  controllers: [AppController, UsersController],
-  providers: [AppService, UsersService], // 의존성 주입할 서비스 등록
+  controllers: [AppController],
+  providers: [AppService], // 의존성 주입할 서비스 등록
   exports: [],
 })
 export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): any {
+  configure(consumer: MiddlewareConsumer): void {
     consumer.apply(LoggerMiddleware).forRoutes('*'); // 모든 경로에 middleware 적용
   }
 }
