@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChannelChats } from 'src/entities/ChannelChats';
 import { ChannelMembers } from 'src/entities/ChannelMembers';
 import { Channels } from 'src/entities/Channels';
 import { Users } from 'src/entities/Users';
 import { Workspaces } from 'src/entities/Workspaces';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 
 @Injectable()
 export class ChannelsService {
@@ -45,6 +45,7 @@ export class ChannelsService {
   }
 
   async getWorkspaceChannel(url: string, name: string) {
+    // na
     return this.channelsRepository
       .createQueryBuilder('channel')
       .innerJoin('channel.Workspace', 'workspace', 'workspace.url = :url', {
@@ -52,5 +53,21 @@ export class ChannelsService {
       })
       .where('channel.name = :name', { name })
       .getOne();
+  }
+
+  async createWorkspaceChannels(url: string, name: string, myId: number) {
+    const workspace = await this.workspacesRepository.findOne({
+      where: { url },
+    });
+
+    const channel = new Channels();
+    channel.name = name;
+    channel.WorkspaceId = workspace.id;
+    const channelReturned = await this.channelsRepository.save(channel);
+
+    const channelMember = new ChannelMembers();
+    channelMember.UserId = myId;
+    channelMember.ChannelId = channelReturned.id;
+    await this.channelMembersRepository.save(channelMember);
   }
 }
