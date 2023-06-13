@@ -113,4 +113,85 @@ export class WorkspacesService {
     //   .createQueryBuilder('user')
     //   .innerJoin('user.Workspaces', 'workspaces');
   }
+
+  async createWorkspaceMembers(url: string, email: string) {
+    const workspace = await this.workspacesRepository.findOne({
+      where: { url },
+      relations: ['Channels'],
+    });
+
+    // queryBuilder 버전
+    this.workspacesRepository
+      .createQueryBuilder('workspaces')
+      // typeorm은 innerJoin 하면 join한 테이블은 가져오지 않는데,
+      // innerJoinAndSelect을 하면 join한 테이블을 다 가져온다.
+      .innerJoinAndSelect('workspaces.Channels', 'channels')
+      .getOne();
+
+    const user = await this.usersRepository.findOne({ where: { email } });
+    if (!user) return null;
+
+    const workspaceMember = new WorkspaceMembers();
+    workspaceMember.WorkspaceId = workspace.id;
+    workspaceMember.UserId = user.id;
+    await this.workspaceMembersRepository.save(workspaceMember);
+
+    const channelMember = new ChannelMembers();
+    channelMember.ChannelId = workspace.Channels.find(
+      (v) => v.name === '일반',
+    ).id;
+    channelMember.UserId = user.id;
+    await this.channelMembersRepository.save(channelMember);
+  }
+
+  // transaction
+  // async createWorkspaceMembers(url: string, email: string) {
+  //   const queryRunner = this.dataSource.createQueryRunner();
+  //   await queryRunner.connect();
+  //   await queryRunner.startTransaction();
+
+  //   try {
+  //     const workspace = await queryRunner.manager.findOne(Workspaces, {
+  //       where: { url },
+  //       relations: ['Channels'],
+  //     });
+
+  //     const user = await queryRunner.manager.findOne(Users, { where: { email } });
+  //     if (!user) return null;
+
+  //     const workspaceMember = new WorkspaceMembers();
+  //     workspaceMember.WorkspaceId = workspace.id;
+  //     workspaceMember.UserId = user.id;
+  //     await queryRunner.manager.save(workspaceMember);
+
+  //     const channelMember = new ChannelMembers();
+  //     channelMember.ChannelId = workspace.Channels.find(
+  //       (v) => v.name === '일반',
+  //     ).id;
+  //     channelMember.UserId = user.id;
+  //     await queryRunner.manager.save(channelMember);
+
+  //     await queryRunner.commitTransaction();
+  //   } catch (error) {
+  //     console.error(error);
+  //     await queryRunner.rollbackTransaction();
+  //   } finally {
+  //     await queryRunner.release();
+  //   }
+  // }
+
+  async getWorkspaceMember(url: string, id: number) {
+    return (
+      this.usersRepository
+        .createQueryBuilder('user')
+        .where('user.id = :id', { id })
+        // query문이 복잡해지면 아래와 같이
+        // .where('UPPERCASE(user.id) = :id AND user.name', { id, name })
+        // .andWhere('user.name = :name', { name })
+        .innerJoin('user.Workspaces', 'workspaces', 'workspaces.url = :url', {
+          url,
+        })
+        .getOne()
+    );
+  }
 }
