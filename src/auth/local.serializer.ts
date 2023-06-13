@@ -15,7 +15,7 @@ export class LocalSerializer extends PassportSerializer {
   }
 
   serializeUser(user: Users, done: CallableFunction) {
-    console.log(user);
+    console.log('user!!!=', user);
     done(null, user.id);
   }
 
@@ -24,11 +24,11 @@ export class LocalSerializer extends PassportSerializer {
       .findOneOrFail({
         where: { id: +userId },
         select: ['id', 'email', 'nickname'],
-        relations: ['Workspaces'],
+        relations: ['Workspaces'], // 사용자가 속한 workspaces를 알아서 가져옴
       })
       .then((user) => {
         console.log('user', user);
-        done(null, user);
+        done(null, user); // req.user
       })
       .catch((error) => done(error));
   }

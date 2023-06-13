@@ -12,11 +12,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeORMConfig } from './configs/typeorm.config';
 import { UsersController } from './users/users.controller';
 import { Users } from './entities/Users';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot(typeORMConfig),
+    AuthModule,
     UsersModule,
     WorkspacesModule,
     DmsModule,
