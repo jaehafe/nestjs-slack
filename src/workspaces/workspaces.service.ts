@@ -95,4 +95,22 @@ export class WorkspacesService {
       await queryRunner.release();
     }
   }
+
+  async getWorkspaceMembers(url: string) {
+    return (
+      this.usersRepository
+        .createQueryBuilder('user') // user 테이블에 대한 별칭
+        .innerJoin('user.WorkspaceMembers', 'members')
+        // 4번째 parameter가 3번째 :url로 들어감, sql injection 방어하기 위한 방법 중 하나
+        .innerJoin('members.Workspace', 'workspace', 'workspace.url = :url', {
+          url,
+        })
+        .getMany()
+    );
+
+    // ManyToMany일 경우
+    // this.usersRepository
+    //   .createQueryBuilder('user')
+    //   .innerJoin('user.Workspaces', 'workspaces');
+  }
 }
