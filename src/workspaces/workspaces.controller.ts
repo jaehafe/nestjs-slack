@@ -33,8 +33,11 @@ export class WorkspacesController {
     );
   }
 
+  @ApiOperation({ summary: '워크스페이스 멤버 가져오기' })
   @Get(':url/members')
-  getAllMembersFromWorkspace() {}
+  async getWorkspaceMembers(@Param('url') url: string) {
+    return this.workspacesService.getWorkspaceMembers(url);
+  }
 
   @Post(':url/members')
   inviteMembersToWorkspace() {}
