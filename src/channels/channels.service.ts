@@ -70,4 +70,52 @@ export class ChannelsService {
     channelMember.ChannelId = channelReturned.id;
     await this.channelMembersRepository.save(channelMember);
   }
+
+  async getWorkspaceChannelMembers(url: string, name: string) {
+    // name 을 가진 channel들의 속해있는 멤버들
+    return this.usersRepository
+      .createQueryBuilder('user')
+      .innerJoin('user.Channels', 'channels', 'channels.name = :name', {
+        name,
+      })
+      .innerJoin('channels.Workspace', 'workspace', 'workspace.url = :url', {
+        url,
+      })
+      .getMany();
+  }
+
+  async createWorkspaceChannelMembers(
+    url: string,
+    name: string,
+    email: string,
+  ) {
+    const channel = await this.channelsRepository
+      .createQueryBuilder('channel')
+      .innerJoin('channel.Workspace', 'workspace', 'workspace.url = :url', {
+        url,
+      })
+      .where('channel.name = :name', { name })
+      .getOne();
+
+    if (!channel) {
+      throw new NotFoundException('채널이 존재하지 않습니다.');
+    }
+
+    const user = await this.usersRepository
+      .createQueryBuilder('user')
+      .where('user.email = :email', { email })
+      .innerJoin('user.Workspaces', 'workspace', 'workspace.url = :url', {
+        url,
+      })
+      .getOne();
+
+    if (!user) {
+      throw new NotFoundException('사용자가 존재하지 않습니다.');
+    }
+
+    const channelMember = new ChannelMembers();
+    channelMember.ChannelId = channel.id;
+    channelMember.UserId = user.id;
+    await this.channelMembersRepository.save(channelMember);
+  }
 }
