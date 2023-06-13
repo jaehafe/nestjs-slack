@@ -27,7 +27,11 @@ export class UsersService {
     const user = await this.usersRepository.findOne({ where: { email } });
     if (user) {
       // 이미 존재하는 유저 에러
-      throw new HttpException('이미 존재하는 사용자입니다.', 400);
+      // throw new HttpException('이미 존재하는 사용자입니다.', 400);
+      throw new HttpException(
+        { message: '이미 존재하는 사용자입니다.', statusCode: 400 },
+        400,
+      );
     }
 
     const hashPassword = await bcrypt.hash(password, 12);

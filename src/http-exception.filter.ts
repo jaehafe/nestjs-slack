@@ -16,6 +16,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       | { message: any; statusCode: number }
       | { error: string; statusCode: 400; message: string[] };
 
+    console.log(status, err);
+
     if (typeof err !== 'string' && err.statusCode === 400) {
       return response.status(status).json({
         success: false,
