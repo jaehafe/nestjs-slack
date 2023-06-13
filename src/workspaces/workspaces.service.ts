@@ -66,6 +66,8 @@ export class WorkspacesService {
         ChannelId: channelReturned.id,
       });
 
+      await queryRunner.commitTransaction();
+
       // const workspace = new Workspaces();
       // workspace.name = name;
       // workspace.url = url;
