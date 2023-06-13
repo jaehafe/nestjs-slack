@@ -118,4 +118,43 @@ export class ChannelsService {
     channelMember.UserId = user.id;
     await this.channelMembersRepository.save(channelMember);
   }
+
+  async getWorkspaceChannelChats(
+    url: string,
+    name: string,
+    perPage: number,
+    page: number,
+  ) {
+    return this.channelChatsRepository
+      .createQueryBuilder('channelChats')
+      .innerJoin('channelChats.Channel', 'channel', 'channel.name = :name', {
+        name,
+      })
+      .innerJoin('channel.Workspace', 'workspace', 'workspace.url = :url', {
+        url,
+      })
+      .innerJoinAndSelect('channelChats.User', 'user')
+      .orderBy('channelChats.createdAt', 'DESC')
+      .take(perPage) // limit
+      .skip(perPage * (page - 1))
+      .getMany();
+  }
+
+  async getChannelUnreadsCount(url: string, name: string, after: string) {
+    const channel = await this.channelsRepository
+      .createQueryBuilder('channel')
+      .innerJoin('channel.Workspace', 'workspace', 'workspace.url = :url', {
+        url,
+      })
+      .where('channel.name = :name', { name })
+      .getOne();
+
+    // COUNT(*)
+    return this.channelChatsRepository.count({
+      where: {
+        ChannelId: channel.id,
+        createdAt: MoreThan(new Date(after)), // createdAt > '2023-06-14'
+      },
+    });
+  }
 }
