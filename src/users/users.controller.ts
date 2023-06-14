@@ -12,7 +12,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { LoggedInGuard } from 'src/auth/logged-in-guard';
 import { NotLoggedInGuard } from 'src/auth/not-logged-in.guard';
-import { User } from 'src/common/decorator/user.decorator';
+import { User } from 'src/common/decorators/user.decorator';
 import { UserDto } from 'src/common/dto/user.dto';
 import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedToNull.interceptor';
 import { JoinRequestDto } from './dto/join.request.dto';
