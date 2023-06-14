@@ -140,7 +140,7 @@ export class ChannelsService {
       .getMany();
   }
 
-  async getChannelUnreadsCount(url: string, name: string, after: string) {
+  async getChannelUnreadsCount(url: string, name: string, after: number) {
     const channel = await this.channelsRepository
       .createQueryBuilder('channel')
       .innerJoin('channel.Workspace', 'workspace', 'workspace.url = :url', {
