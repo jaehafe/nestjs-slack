@@ -14,6 +14,7 @@ import { User } from 'src/common/decorators/user.decorator';
 import { Users } from 'src/entities/Users';
 import { ChannelsService } from './channels.service';
 import { CreateChannelDto } from './dto/create-channel.dto';
+import { PostChatDto } from './dto/post-chat.dto';
 
 @ApiTags('CHANNEL ')
 @UseGuards(LoggedInGuard)
@@ -101,6 +102,24 @@ export class ChannelsController {
     @Param('name') name: string,
     @Query('after', ParseIntPipe) after: number,
   ) {
+    console.log('after=', after);
+
     return this.channelsService.getChannelUnreadsCount(url, name, after);
+  }
+
+  @ApiOperation({ summary: '워크스페이스 특정 채널 채팅 생성하기' })
+  @Post(':url/channels/:name/chats')
+  async createWorkspaceChannelChats(
+    @Param('url') url,
+    @Param('name') name,
+    @Body('content') body: PostChatDto,
+    @User() user: Users,
+  ) {
+    return this.channelsService.createWorkspaceChannelChats({
+      url,
+      name,
+      content: body.content,
+      myId: user.id,
+    });
   }
 }
