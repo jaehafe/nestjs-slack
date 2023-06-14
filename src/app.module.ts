@@ -13,6 +13,7 @@ import { typeORMConfig } from './configs/typeorm.config';
 import { UsersController } from './users/users.controller';
 import { Users } from './entities/Users';
 import { AuthModule } from './auth/auth.module';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AuthModule } from './auth/auth.module';
     DmsModule,
     ChannelsModule,
     TypeOrmModule.forFeature([Users]),
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [AppService], // 의존성 주입할 서비스 등록
